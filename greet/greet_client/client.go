@@ -18,11 +18,11 @@ func main() {
 		}
 	}(cc)
 
-	c := greetpb.NewGreetServiceClient(cc)
-	makeGreetCall(c)
+	cl := greetpb.NewGreetServiceClient(cc)
+	makeGreetCall(cl)
 }
 
-func makeGreetCall(c greetpb.GreetServiceClient) {
+func makeGreetCall(cl greetpb.GreetServiceClient) {
 	req := &greetpb.GreetRequest{
 		Greeting: &greetpb.Greeting{
 			FirstName: "Nikolay",
@@ -30,7 +30,7 @@ func makeGreetCall(c greetpb.GreetServiceClient) {
 		},
 	}
 
-	res, err := c.Greet(context.Background(), req)
+	res, err := cl.Greet(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error while calling Greet RPC: %v", err)
 	}

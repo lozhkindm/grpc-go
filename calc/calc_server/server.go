@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/lozhkindm/grpc-go/greet/greetpb"
+	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -11,9 +10,8 @@ import (
 
 type server struct{}
 
-func (server) Greet(_ context.Context, req *greetpb.GreetRequest) (*greetpb.GreetResponse, error) {
-	result := fmt.Sprintf("Hello, %s", req.GetGreeting().GetFirstName())
-	return &greetpb.GreetResponse{Result: result}, nil
+func (s server) Sum(_ context.Context, req *calcpb.CalcRequest) (*calcpb.CalcResponse, error) {
+	return &calcpb.CalcResponse{Result: req.Number1 + req.Number2}, nil
 }
 
 func main() {
@@ -23,7 +21,7 @@ func main() {
 	}
 
 	srv := grpc.NewServer()
-	greetpb.RegisterGreetServiceServer(srv, &server{})
+	calcpb.RegisterCalcServiceServer(srv, &server{})
 
 	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
