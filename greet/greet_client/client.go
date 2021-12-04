@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/greet/greetpb"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 )
 
@@ -20,6 +21,7 @@ func main() {
 
 	cl := greetpb.NewGreetServiceClient(cc)
 	makeGreetCall(cl)
+	makeGreetManyTimesCall(cl)
 }
 
 func makeGreetCall(cl greetpb.GreetServiceClient) {
@@ -35,4 +37,29 @@ func makeGreetCall(cl greetpb.GreetServiceClient) {
 		log.Fatalf("Error while calling Greet RPC: %v", err)
 	}
 	log.Printf("Response from Greet: %v", res.GetResult())
+}
+
+func makeGreetManyTimesCall(cl greetpb.GreetServiceClient) {
+	req := &greetpb.GreetManyTimesRequest{
+		Greeting: &greetpb.Greeting{
+			FirstName: "Engeniy",
+			LastName:  "Onegin",
+		},
+	}
+
+	stream, err := cl.GreetManyTimes(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error while calling GreetManyTimes RPC: %v", err)
+	}
+
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Error while reading the stream: %v", err)
+		}
+		log.Printf("Response from GreetManyTimes: %v", res.GetResult())
+	}
 }
