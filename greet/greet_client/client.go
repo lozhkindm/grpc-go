@@ -23,6 +23,7 @@ func main() {
 	makeGreetCall(cl)
 	makeGreetManyTimesCall(cl)
 	makeLongGreetCall(cl)
+	makeGreetEveryoneCall(cl)
 }
 
 func makeGreetCall(cl greetpb.GreetServiceClient) {
@@ -87,4 +88,44 @@ func makeLongGreetCall(cl greetpb.GreetServiceClient) {
 		log.Fatalf("Error while receiving response from LongGreet: %v", err)
 	}
 	log.Printf("Response from LongGreet: %v", res.GetResult())
+}
+
+func makeGreetEveryoneCall(cl greetpb.GreetServiceClient) {
+	stream, err := cl.GreetEveryone(context.Background())
+	if err != nil {
+		log.Fatalf("Error while calling GreetEveryone RPC: %v", err)
+	}
+
+	names := []string{"Ivan", "Jorik", "Vasya", "Olesha"}
+	wc := make(chan struct{})
+
+	go func() {
+		for _, name := range names {
+			req := &greetpb.GreetEveryoneRequest{
+				Greeting: &greetpb.Greeting{FirstName: name},
+			}
+			if err := stream.Send(req); err != nil {
+				log.Fatalf("Error while sending a request to the stream: %v", err)
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			log.Fatalf("Error while closing the stream: %v", err)
+		}
+	}()
+
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("Error while reading the stream: %v", err)
+			}
+			log.Printf("Response from GreetEveryone: %v", res.GetResult())
+		}
+		close(wc)
+	}()
+
+	<-wc
 }

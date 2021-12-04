@@ -42,9 +42,27 @@ func (server) LongGreet(stream greetpb.GreetService_LongGreetServer) error {
 			return stream.SendAndClose(res)
 		}
 		if err != nil {
-			log.Fatalf("Error while reading the stream: %v", err)
+			return err
 		}
 		names = append(names, req.GetGreeting().GetFirstName())
+	}
+}
+
+func (server) GreetEveryone(stream greetpb.GreetService_GreetEveryoneServer) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		res := &greetpb.GreetEveryoneResponse{
+			Result: fmt.Sprintf("Hello, %s", req.GetGreeting().GetFirstName()),
+		}
+		if err := stream.Send(res); err != nil {
+			return err
+		}
 	}
 }
 
