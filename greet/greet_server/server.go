@@ -17,7 +17,7 @@ func (server) Greet(_ context.Context, req *greetpb.GreetRequest) (*greetpb.Gree
 	return &greetpb.GreetResponse{Result: result}, nil
 }
 
-func (s server) GreetManyTimes(req *greetpb.GreetManyTimesRequest, stream greetpb.GreetService_GreetManyTimesServer) error {
+func (server) GreetManyTimes(req *greetpb.GreetManyTimesRequest, stream greetpb.GreetService_GreetManyTimesServer) error {
 	for i := 0; i < 10; i++ {
 		res := &greetpb.GreetManyTimesResponse{
 			Result: fmt.Sprintf("Hello %s, number %d", req.GetGreeting().GetFirstName(), i),

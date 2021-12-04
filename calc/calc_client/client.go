@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 )
 
@@ -21,6 +22,7 @@ func main() {
 
 	cl := calcpb.NewCalcServiceClient(cc)
 	makeSumCall(cl)
+	makePrimeCall(cl)
 }
 
 func makeSumCall(cl calcpb.CalcServiceClient) {
@@ -34,4 +36,24 @@ func makeSumCall(cl calcpb.CalcServiceClient) {
 		log.Fatalf("Error while calling Sum RPC: %v", err)
 	}
 	log.Printf("Response from Sum: %v", res)
+}
+
+func makePrimeCall(cl calcpb.CalcServiceClient) {
+	req := &calcpb.PrimeRequest{Number: 120}
+
+	stream, err := cl.Prime(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error while calling Prime RPC: %v", err)
+	}
+
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Error while reading the stream: %v", err)
+		}
+		log.Printf("Response from Prime: %v", res.GetResult())
+	}
 }

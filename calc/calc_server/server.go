@@ -10,8 +10,26 @@ import (
 
 type server struct{}
 
-func (s server) Sum(_ context.Context, req *calcpb.CalcRequest) (*calcpb.CalcResponse, error) {
+func (server) Sum(_ context.Context, req *calcpb.CalcRequest) (*calcpb.CalcResponse, error) {
 	return &calcpb.CalcResponse{Result: req.Number1 + req.Number2}, nil
+}
+
+func (server) Prime(req *calcpb.PrimeRequest, stream calcpb.CalcService_PrimeServer) error {
+	div, num := 2, int(req.GetNumber())
+
+	for num > 1 {
+		if num%div == 0 {
+			res := &calcpb.PrimeResponse{Result: int32(div)}
+			if err := stream.Send(res); err != nil {
+				return err
+			}
+			num /= div
+		} else {
+			div++
+		}
+	}
+
+	return nil
 }
 
 func main() {
