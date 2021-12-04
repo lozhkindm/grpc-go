@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/lozhkindm/grpc-go/greet/greetpb"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 	"net"
-	"time"
+	"strings"
 )
 
 type server struct{}
@@ -25,9 +26,26 @@ func (server) GreetManyTimes(req *greetpb.GreetManyTimesRequest, stream greetpb.
 		if err := stream.Send(res); err != nil {
 			return err
 		}
-		time.Sleep(1000 * time.Millisecond)
 	}
 	return nil
+}
+
+func (server) LongGreet(stream greetpb.GreetService_LongGreetServer) error {
+	var names []string
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			res := &greetpb.LongGreetResponse{
+				Result: fmt.Sprintf("Hello: %s", strings.Join(names, ", ")),
+			}
+			return stream.SendAndClose(res)
+		}
+		if err != nil {
+			log.Fatalf("Error while reading the stream: %v", err)
+		}
+		names = append(names, req.GetGreeting().GetFirstName())
+	}
 }
 
 func main() {
