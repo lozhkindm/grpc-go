@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 	"net"
 )
@@ -30,6 +31,23 @@ func (server) Prime(req *calcpb.PrimeRequest, stream calcpb.CalcService_PrimeSer
 	}
 
 	return nil
+}
+
+func (server) Average(stream calcpb.CalcService_AverageServer) error {
+	sum, num := .0, 0
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			res := sum / float64(num)
+			return stream.SendAndClose(&calcpb.AverageResponse{Result: res})
+		}
+		if err != nil {
+			log.Fatalf("Error while reading the stream: %v", err)
+		}
+		sum += float64(req.GetNumber())
+		num++
+	}
 }
 
 func main() {

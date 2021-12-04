@@ -23,6 +23,7 @@ func main() {
 	cl := calcpb.NewCalcServiceClient(cc)
 	makeSumCall(cl)
 	makePrimeCall(cl)
+	makeAverageCall(cl)
 }
 
 func makeSumCall(cl calcpb.CalcServiceClient) {
@@ -35,7 +36,7 @@ func makeSumCall(cl calcpb.CalcServiceClient) {
 	if err != nil {
 		log.Fatalf("Error while calling Sum RPC: %v", err)
 	}
-	log.Printf("Response from Sum: %v", res)
+	log.Printf("Response from Sum: %v", res.GetResult())
 }
 
 func makePrimeCall(cl calcpb.CalcServiceClient) {
@@ -56,4 +57,25 @@ func makePrimeCall(cl calcpb.CalcServiceClient) {
 		}
 		log.Printf("Response from Prime: %v", res.GetResult())
 	}
+}
+
+func makeAverageCall(cl calcpb.CalcServiceClient) {
+	numbers := []int{1, 2, 3, 4}
+
+	stream, err := cl.Average(context.Background())
+	if err != nil {
+		log.Fatalf("Error while calling Average RPC: %v", err)
+	}
+
+	for _, n := range numbers {
+		if err := stream.Send(&calcpb.AverageRequest{Number: int32(n)}); err != nil {
+			log.Fatalf("Error while sending a request to the stream: %v", err)
+		}
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("Error while receiving response from Average: %v", err)
+	}
+	log.Printf("Response from Average: %v", res.GetResult())
 }
