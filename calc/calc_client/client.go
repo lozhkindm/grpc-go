@@ -24,6 +24,7 @@ func main() {
 	makeSumCall(cl)
 	makePrimeCall(cl)
 	makeAverageCall(cl)
+	makeMaximumCall(cl)
 }
 
 func makeSumCall(cl calcpb.CalcServiceClient) {
@@ -60,7 +61,7 @@ func makePrimeCall(cl calcpb.CalcServiceClient) {
 }
 
 func makeAverageCall(cl calcpb.CalcServiceClient) {
-	numbers := []int{1, 2, 3, 4}
+	numbers := []int32{1, 2, 3, 4}
 
 	stream, err := cl.Average(context.Background())
 	if err != nil {
@@ -68,7 +69,7 @@ func makeAverageCall(cl calcpb.CalcServiceClient) {
 	}
 
 	for _, n := range numbers {
-		if err := stream.Send(&calcpb.AverageRequest{Number: int32(n)}); err != nil {
+		if err := stream.Send(&calcpb.AverageRequest{Number: n}); err != nil {
 			log.Fatalf("Error while sending a request to the stream: %v", err)
 		}
 	}
@@ -78,4 +79,41 @@ func makeAverageCall(cl calcpb.CalcServiceClient) {
 		log.Fatalf("Error while receiving response from Average: %v", err)
 	}
 	log.Printf("Response from Average: %v", res.GetResult())
+}
+
+func makeMaximumCall(cl calcpb.CalcServiceClient) {
+	stream, err := cl.Maximum(context.Background())
+	if err != nil {
+		log.Fatalf("Error while calling Maximum RPC: %v", err)
+	}
+
+	numbers := []int32{1, 5, 3, 6, 2, 20}
+	wc := make(chan struct{})
+
+	go func() {
+		for _, number := range numbers {
+			if err := stream.Send(&calcpb.MaximumRequest{Number: number}); err != nil {
+				log.Fatalf("Error while sending a request to the stream: %v", err)
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			log.Fatalf("Error while closing the stream: %v", err)
+		}
+	}()
+
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("Error while reading the stream: %v", err)
+			}
+			log.Printf("Response from Maximum: %v", res.GetResult())
+		}
+		close(wc)
+	}()
+
+	<-wc
 }

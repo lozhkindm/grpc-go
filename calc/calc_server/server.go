@@ -50,6 +50,25 @@ func (server) Average(stream calcpb.CalcService_AverageServer) error {
 	}
 }
 
+func (server) Maximum(stream calcpb.CalcService_MaximumServer) error {
+	max := int32(0)
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if num := req.GetNumber(); num > max {
+			max = num
+			if err := stream.Send(&calcpb.MaximumResponse{Result: max}); err != nil {
+				return err
+			}
+		}
+	}
+}
+
 func main() {
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {

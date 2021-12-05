@@ -314,6 +314,100 @@ func (x *AverageResponse) GetResult() float64 {
 	return 0
 }
 
+type MaximumRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Number int32 `protobuf:"varint,1,opt,name=number,proto3" json:"number,omitempty"`
+}
+
+func (x *MaximumRequest) Reset() {
+	*x = MaximumRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_calc_calcpb_calc_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MaximumRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MaximumRequest) ProtoMessage() {}
+
+func (x *MaximumRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_calc_calcpb_calc_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MaximumRequest.ProtoReflect.Descriptor instead.
+func (*MaximumRequest) Descriptor() ([]byte, []int) {
+	return file_calc_calcpb_calc_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *MaximumRequest) GetNumber() int32 {
+	if x != nil {
+		return x.Number
+	}
+	return 0
+}
+
+type MaximumResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Result int32 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *MaximumResponse) Reset() {
+	*x = MaximumResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_calc_calcpb_calc_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MaximumResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MaximumResponse) ProtoMessage() {}
+
+func (x *MaximumResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_calc_calcpb_calc_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MaximumResponse.ProtoReflect.Descriptor instead.
+func (*MaximumResponse) Descriptor() ([]byte, []int) {
+	return file_calc_calcpb_calc_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *MaximumResponse) GetResult() int32 {
+	if x != nil {
+		return x.Result
+	}
+	return 0
+}
+
 var File_calc_calcpb_calc_proto protoreflect.FileDescriptor
 
 var file_calc_calcpb_calc_proto_rawDesc = []byte{
@@ -335,20 +429,29 @@ var file_calc_calcpb_calc_proto_rawDesc = []byte{
 	0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x6e, 0x75,
 	0x6d, 0x62, 0x65, 0x72, 0x22, 0x29, 0x0a, 0x0f, 0x41, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c,
-	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32,
-	0xaf, 0x01, 0x0a, 0x0b, 0x43, 0x61, 0x6c, 0x63, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
-	0x2e, 0x0a, 0x03, 0x53, 0x75, 0x6d, 0x12, 0x11, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x43, 0x61,
-	0x6c, 0x63, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x63, 0x61, 0x6c, 0x63,
-	0x2e, 0x43, 0x61, 0x6c, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x34, 0x0a, 0x05, 0x50, 0x72, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e,
-	0x50, 0x72, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63,
-	0x61, 0x6c, 0x63, 0x2e, 0x50, 0x72, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x07, 0x41, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x12, 0x14, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x41, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x41, 0x76,
-	0x65, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x28,
-	0x01, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x70, 0x62, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22,
+	0x28, 0x0a, 0x0e, 0x4d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x22, 0x29, 0x0a, 0x0f, 0x4d, 0x61, 0x78,
+	0x69, 0x6d, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06,
+	0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x72, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x32, 0xed, 0x01, 0x0a, 0x0b, 0x43, 0x61, 0x6c, 0x63, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x03, 0x53, 0x75, 0x6d, 0x12, 0x11, 0x2e, 0x63, 0x61,
+	0x6c, 0x63, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12,
+	0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x34, 0x0a, 0x05, 0x50, 0x72, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x2e,
+	0x63, 0x61, 0x6c, 0x63, 0x2e, 0x50, 0x72, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x50, 0x72, 0x69, 0x6d, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x07, 0x41, 0x76,
+	0x65, 0x72, 0x61, 0x67, 0x65, 0x12, 0x14, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x41, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x63, 0x61,
+	0x6c, 0x63, 0x2e, 0x41, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x28, 0x01, 0x12, 0x3c, 0x0a, 0x07, 0x4d, 0x61, 0x78, 0x69, 0x6d, 0x75,
+	0x6d, 0x12, 0x14, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x4d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x4d,
+	0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x28, 0x01, 0x30, 0x01, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x70, 0x62,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -363,7 +466,7 @@ func file_calc_calcpb_calc_proto_rawDescGZIP() []byte {
 	return file_calc_calcpb_calc_proto_rawDescData
 }
 
-var file_calc_calcpb_calc_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_calc_calcpb_calc_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_calc_calcpb_calc_proto_goTypes = []interface{}{
 	(*CalcRequest)(nil),     // 0: calc.CalcRequest
 	(*CalcResponse)(nil),    // 1: calc.CalcResponse
@@ -371,16 +474,20 @@ var file_calc_calcpb_calc_proto_goTypes = []interface{}{
 	(*PrimeResponse)(nil),   // 3: calc.PrimeResponse
 	(*AverageRequest)(nil),  // 4: calc.AverageRequest
 	(*AverageResponse)(nil), // 5: calc.AverageResponse
+	(*MaximumRequest)(nil),  // 6: calc.MaximumRequest
+	(*MaximumResponse)(nil), // 7: calc.MaximumResponse
 }
 var file_calc_calcpb_calc_proto_depIdxs = []int32{
 	0, // 0: calc.CalcService.Sum:input_type -> calc.CalcRequest
 	2, // 1: calc.CalcService.Prime:input_type -> calc.PrimeRequest
 	4, // 2: calc.CalcService.Average:input_type -> calc.AverageRequest
-	1, // 3: calc.CalcService.Sum:output_type -> calc.CalcResponse
-	3, // 4: calc.CalcService.Prime:output_type -> calc.PrimeResponse
-	5, // 5: calc.CalcService.Average:output_type -> calc.AverageResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	6, // 3: calc.CalcService.Maximum:input_type -> calc.MaximumRequest
+	1, // 4: calc.CalcService.Sum:output_type -> calc.CalcResponse
+	3, // 5: calc.CalcService.Prime:output_type -> calc.PrimeResponse
+	5, // 6: calc.CalcService.Average:output_type -> calc.AverageResponse
+	7, // 7: calc.CalcService.Maximum:output_type -> calc.MaximumResponse
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -464,6 +571,30 @@ func file_calc_calcpb_calc_proto_init() {
 				return nil
 			}
 		}
+		file_calc_calcpb_calc_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MaximumRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_calc_calcpb_calc_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MaximumResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -471,7 +602,7 @@ func file_calc_calcpb_calc_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_calc_calcpb_calc_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -500,6 +631,7 @@ type CalcServiceClient interface {
 	Sum(ctx context.Context, in *CalcRequest, opts ...grpc.CallOption) (*CalcResponse, error)
 	Prime(ctx context.Context, in *PrimeRequest, opts ...grpc.CallOption) (CalcService_PrimeClient, error)
 	Average(ctx context.Context, opts ...grpc.CallOption) (CalcService_AverageClient, error)
+	Maximum(ctx context.Context, opts ...grpc.CallOption) (CalcService_MaximumClient, error)
 }
 
 type calcServiceClient struct {
@@ -585,11 +717,43 @@ func (x *calcServiceAverageClient) CloseAndRecv() (*AverageResponse, error) {
 	return m, nil
 }
 
+func (c *calcServiceClient) Maximum(ctx context.Context, opts ...grpc.CallOption) (CalcService_MaximumClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_CalcService_serviceDesc.Streams[2], "/calc.CalcService/Maximum", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &calcServiceMaximumClient{stream}
+	return x, nil
+}
+
+type CalcService_MaximumClient interface {
+	Send(*MaximumRequest) error
+	Recv() (*MaximumResponse, error)
+	grpc.ClientStream
+}
+
+type calcServiceMaximumClient struct {
+	grpc.ClientStream
+}
+
+func (x *calcServiceMaximumClient) Send(m *MaximumRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *calcServiceMaximumClient) Recv() (*MaximumResponse, error) {
+	m := new(MaximumResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // CalcServiceServer is the server API for CalcService service.
 type CalcServiceServer interface {
 	Sum(context.Context, *CalcRequest) (*CalcResponse, error)
 	Prime(*PrimeRequest, CalcService_PrimeServer) error
 	Average(CalcService_AverageServer) error
+	Maximum(CalcService_MaximumServer) error
 }
 
 // UnimplementedCalcServiceServer can be embedded to have forward compatible implementations.
@@ -604,6 +768,9 @@ func (*UnimplementedCalcServiceServer) Prime(*PrimeRequest, CalcService_PrimeSer
 }
 func (*UnimplementedCalcServiceServer) Average(CalcService_AverageServer) error {
 	return status.Errorf(codes.Unimplemented, "method Average not implemented")
+}
+func (*UnimplementedCalcServiceServer) Maximum(CalcService_MaximumServer) error {
+	return status.Errorf(codes.Unimplemented, "method Maximum not implemented")
 }
 
 func RegisterCalcServiceServer(s *grpc.Server, srv CalcServiceServer) {
@@ -675,6 +842,32 @@ func (x *calcServiceAverageServer) Recv() (*AverageRequest, error) {
 	return m, nil
 }
 
+func _CalcService_Maximum_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(CalcServiceServer).Maximum(&calcServiceMaximumServer{stream})
+}
+
+type CalcService_MaximumServer interface {
+	Send(*MaximumResponse) error
+	Recv() (*MaximumRequest, error)
+	grpc.ServerStream
+}
+
+type calcServiceMaximumServer struct {
+	grpc.ServerStream
+}
+
+func (x *calcServiceMaximumServer) Send(m *MaximumResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *calcServiceMaximumServer) Recv() (*MaximumRequest, error) {
+	m := new(MaximumRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _CalcService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "calc.CalcService",
 	HandlerType: (*CalcServiceServer)(nil),
@@ -693,6 +886,12 @@ var _CalcService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Average",
 			Handler:       _CalcService_Average_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "Maximum",
+			Handler:       _CalcService_Maximum_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},
