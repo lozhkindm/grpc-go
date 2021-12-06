@@ -36,9 +36,21 @@ message MaximumResponse {
   int32 result = 1;
 }
 
+message RootRequest {
+  int32 number = 1;
+}
+
+message RootResponse {
+  double result = 1;
+}
+
 service CalcService {
   rpc Sum(CalcRequest) returns (CalcResponse) {};
   rpc Prime(PrimeRequest) returns (stream PrimeResponse) {};
   rpc Average(stream AverageRequest) returns (AverageResponse) {};
   rpc Maximum(stream MaximumRequest) returns (stream MaximumResponse) {};
+
+  // Possible errors:
+  // Negative number - INVALID_ARGUMENT
+  rpc Root(RootRequest) returns (RootResponse) {};
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
 )
@@ -25,6 +26,7 @@ func main() {
 	makePrimeCall(cl)
 	makeAverageCall(cl)
 	makeMaximumCall(cl)
+	makeRootCall(cl)
 }
 
 func makeSumCall(cl calcpb.CalcServiceClient) {
@@ -116,4 +118,23 @@ func makeMaximumCall(cl calcpb.CalcServiceClient) {
 	}()
 
 	<-wc
+}
+
+func makeRootCall(cl calcpb.CalcServiceClient) {
+	numbers := []int32{10, -10}
+	for _, num := range numbers {
+		rootForNumber(cl, num)
+	}
+}
+
+func rootForNumber(cl calcpb.CalcServiceClient, num int32) {
+	res, err := cl.Root(context.Background(), &calcpb.RootRequest{Number: num})
+	if err != nil {
+		if err, ok := status.FromError(err); ok {
+			log.Fatalln(err)
+		} else {
+			log.Fatalf("Error while calling Root RPC: %v\n", err)
+		}
+	}
+	log.Printf("Response from Root: %v\n", res.GetResult())
 }

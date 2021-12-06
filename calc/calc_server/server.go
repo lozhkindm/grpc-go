@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
+	"math"
 	"net"
 )
 
@@ -67,6 +71,14 @@ func (server) Maximum(stream calcpb.CalcService_MaximumServer) error {
 			}
 		}
 	}
+}
+
+func (server) Root(_ context.Context, req *calcpb.RootRequest) (*calcpb.RootResponse, error) {
+	num := req.GetNumber()
+	if num < 0 {
+		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("Number is negative: %v", num))
+	}
+	return &calcpb.RootResponse{Result: math.Sqrt(float64(num))}, nil
 }
 
 func main() {
