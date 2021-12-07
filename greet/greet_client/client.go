@@ -4,8 +4,11 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/greet/greetpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
+	"time"
 )
 
 func main() {
@@ -24,6 +27,8 @@ func main() {
 	makeGreetManyTimesCall(cl)
 	makeLongGreetCall(cl)
 	makeGreetEveryoneCall(cl)
+	makeGreetWithDeadlineCall(cl, time.Millisecond*5000)
+	makeGreetWithDeadlineCall(cl, time.Millisecond*1000)
 }
 
 func makeGreetCall(cl greetpb.GreetServiceClient) {
@@ -128,4 +133,26 @@ func makeGreetEveryoneCall(cl greetpb.GreetServiceClient) {
 	}()
 
 	<-wc
+}
+
+func makeGreetWithDeadlineCall(cl greetpb.GreetServiceClient, timeout time.Duration) {
+	req := &greetpb.GreetWithDeadlineRequest{
+		Greeting: &greetpb.Greeting{FirstName: "Vasya", LastName: "Pupkin"},
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	res, err := cl.GreetWithDeadline(ctx, req)
+	if err != nil {
+		if err, ok := status.FromError(err); ok {
+			if err.Code() == codes.DeadlineExceeded {
+				log.Fatalf("Deadline exceeded: %v", err)
+			} else {
+				log.Fatalf("Unexpected error: %v", err)
+			}
+		} else {
+			log.Fatalf("Error while calling GreetWithDeadline RPC: %v", err)
+		}
+	}
+	log.Printf("Response from GreetWithDeadline: %v", res.GetResult())
 }

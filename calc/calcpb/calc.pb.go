@@ -762,6 +762,8 @@ type CalcServiceClient interface {
 	Prime(ctx context.Context, in *PrimeRequest, opts ...grpc.CallOption) (CalcService_PrimeClient, error)
 	Average(ctx context.Context, opts ...grpc.CallOption) (CalcService_AverageClient, error)
 	Maximum(ctx context.Context, opts ...grpc.CallOption) (CalcService_MaximumClient, error)
+	// Possible errors:
+	// Negative number - INVALID_ARGUMENT
 	Root(ctx context.Context, in *RootRequest, opts ...grpc.CallOption) (*RootResponse, error)
 }
 
@@ -894,6 +896,8 @@ type CalcServiceServer interface {
 	Prime(*PrimeRequest, CalcService_PrimeServer) error
 	Average(CalcService_AverageServer) error
 	Maximum(CalcService_MaximumServer) error
+	// Possible errors:
+	// Negative number - INVALID_ARGUMENT
 	Root(context.Context, *RootRequest) (*RootResponse, error)
 }
 
