@@ -6,6 +6,7 @@ import (
 	"github.com/lozhkindm/grpc-go/calc/calcpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"io"
 	"log"
@@ -89,6 +90,7 @@ func main() {
 
 	srv := grpc.NewServer()
 	calcpb.RegisterCalcServiceServer(srv, &server{})
+	reflection.Register(srv)
 
 	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
