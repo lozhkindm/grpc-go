@@ -26,7 +26,7 @@ type BlogItem struct {
 
 type Server struct{}
 
-func (s Server) CreateBlog(_ context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
+func (Server) CreateBlog(_ context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
 	blog := req.GetBlog()
 
 	item := BlogItem{
