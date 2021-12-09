@@ -7,6 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 	"net"
 	"os"
@@ -15,13 +17,42 @@ import (
 
 var collection *mongo.Collection
 
-type Server struct{}
-
 type BlogItem struct {
 	Id       primitive.ObjectID `bson:"_id,omitempty"`
 	AuthorId string             `bson:"author_id"`
 	Title    string             `bson:"title"`
 	Content  string             `bson:"content"`
+}
+
+type Server struct{}
+
+func (s Server) CreateBlog(_ context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
+	blog := req.GetBlog()
+
+	item := BlogItem{
+		AuthorId: blog.GetAuthorId(),
+		Title:    blog.GetTitle(),
+		Content:  blog.GetContent(),
+	}
+
+	one, err := collection.InsertOne(context.Background(), item)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Internal Server Error: %v", err)
+	}
+
+	oid, ok := one.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Cannot cast to ObjectID")
+	}
+
+	res := &blogpb.CreateBlogResponse{Blog: &blogpb.Blog{
+		Id:       oid.Hex(),
+		AuthorId: blog.AuthorId,
+		Title:    blog.Title,
+		Content:  blog.Content,
+	}}
+
+	return res, nil
 }
 
 func main() {
