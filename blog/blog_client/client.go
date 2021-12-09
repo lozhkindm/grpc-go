@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/lozhkindm/grpc-go/blog/blogpb"
 	"google.golang.org/grpc"
 	"log"
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	cc, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Cannot connect: %v", err)
@@ -19,6 +22,19 @@ func main() {
 	}(cc)
 
 	cl := blogpb.NewBlogServiceClient(cc)
+	//createBlog(cl)
+	readBlog(cl)
+}
+
+func readBlog(cl blogpb.BlogServiceClient) {
+	res, err := cl.ReadBlog(context.Background(), &blogpb.ReadBlogRequest{BlogId: "61b251c9381d0c20a417fffc"})
+	if err != nil {
+		log.Fatalf("Error while reading a blog: %v", err)
+	}
+	fmt.Printf("Response from ReadBlog: %v", res)
+}
+
+func createBlog(cl blogpb.BlogServiceClient) {
 	req := &blogpb.CreateBlogRequest{Blog: &blogpb.Blog{
 		AuthorId: "Vasya",
 		Title:    "How to be a human?",

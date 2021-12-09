@@ -55,6 +55,28 @@ func (Server) CreateBlog(_ context.Context, req *blogpb.CreateBlogRequest) (*blo
 	return res, nil
 }
 
+func (Server) ReadBlog(_ context.Context, req *blogpb.ReadBlogRequest) (*blogpb.ReadBlogResponse, error) {
+	oid, err := primitive.ObjectIDFromHex(req.GetBlogId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Cannot cast to ObjectID: %v", err)
+	}
+
+	item := &BlogItem{}
+	one := collection.FindOne(context.Background(), primitive.M{"_id": oid})
+	if err := one.Decode(item); err != nil {
+		return nil, status.Errorf(codes.NotFound, "Blog not found: %v", err)
+	}
+
+	res := &blogpb.ReadBlogResponse{Blog: &blogpb.Blog{
+		Id:       item.Id.Hex(),
+		AuthorId: item.AuthorId,
+		Title:    item.Title,
+		Content:  item.Content,
+	}}
+
+	return res, nil
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
