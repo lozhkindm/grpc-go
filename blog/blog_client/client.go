@@ -24,7 +24,8 @@ func main() {
 	cl := blogpb.NewBlogServiceClient(cc)
 	//createBlog(cl)
 	//readBlog(cl)
-	updateBlog(cl)
+	//updateBlog(cl)
+	deleteBlog(cl)
 }
 
 func readBlog(cl blogpb.BlogServiceClient) {
@@ -60,4 +61,12 @@ func updateBlog(cl blogpb.BlogServiceClient) {
 		log.Fatalf("Error while updating a blog: %v", err)
 	}
 	log.Printf("Response from UpdateBlog: %v", res)
+}
+
+func deleteBlog(cl blogpb.BlogServiceClient) {
+	res, err := cl.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{BlogId: "61b251c9381d0c20a417fffc"})
+	if err != nil {
+		log.Fatalf("Error while deleting a blog: %v", err)
+	}
+	log.Printf("Response from DeleteBlog: %v", res)
 }

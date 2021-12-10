@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package blog;
 option go_package = "./blogpb";
 
@@ -34,6 +36,12 @@ message UpdateBlogResponse {
   Blog blog = 1;
 }
 
+message DeleteBlogRequest {
+  string blog_id = 1;
+}
+
+message DeleteBlogResponse {}
+
 service BlogService {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
 
@@ -44,4 +52,8 @@ service BlogService {
   // Possible errors:
   // NOT_FOUND
   rpc UpdateBlog(UpdateBlogRequest) returns (UpdateBlogResponse) {};
+
+  // Possible errors:
+  // NOT_FOUND
+  rpc DeleteBlog(DeleteBlogRequest) returns (google.protobuf.Empty) {};
 }

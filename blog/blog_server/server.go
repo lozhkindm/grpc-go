@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 	"net"
 	"os"
@@ -94,6 +95,24 @@ func (Server) UpdateBlog(_ context.Context, req *blogpb.UpdateBlogRequest) (*blo
 	}
 
 	return &blogpb.UpdateBlogResponse{Blog: makeBlogPb(item)}, nil
+}
+
+func (Server) DeleteBlog(_ context.Context, req *blogpb.DeleteBlogRequest) (*emptypb.Empty, error) {
+	oid, err := primitive.ObjectIDFromHex(req.GetBlogId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Cannot cast to ObjectID: %v", err)
+	}
+
+	filter := primitive.M{"_id": oid}
+	one, err := collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Cannot delete the blog: %v", err)
+	}
+	if one.DeletedCount == 0 {
+		return nil, status.Error(codes.NotFound, "Blog not found")
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 func makeBlogPb(item *BlogItem) *blogpb.Blog {
