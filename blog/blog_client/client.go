@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/lozhkindm/grpc-go/blog/blogpb"
 	"google.golang.org/grpc"
 	"log"
@@ -13,30 +12,22 @@ func main() {
 
 	cc, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Cannot connect: %v", err)
+		log.Fatalf("Cannot connect: %v\n", err)
 	}
 	defer func(cc *grpc.ClientConn) {
 		if err := cc.Close(); err != nil {
-			log.Fatalf("Cannot close a client connection: %v", err)
+			log.Fatalf("Cannot close a client connection: %v\n", err)
 		}
 	}(cc)
 
 	cl := blogpb.NewBlogServiceClient(cc)
-	//createBlog(cl)
-	//readBlog(cl)
-	//updateBlog(cl)
-	deleteBlog(cl)
+	blogId := createBlog(cl)
+	readBlog(cl, blogId)
+	updateBlog(cl, blogId)
+	deleteBlog(cl, blogId)
 }
 
-func readBlog(cl blogpb.BlogServiceClient) {
-	res, err := cl.ReadBlog(context.Background(), &blogpb.ReadBlogRequest{BlogId: "61b251c9381d0c20a417fffc"})
-	if err != nil {
-		log.Fatalf("Error while reading a blog: %v", err)
-	}
-	fmt.Printf("Response from ReadBlog: %v", res)
-}
-
-func createBlog(cl blogpb.BlogServiceClient) {
+func createBlog(cl blogpb.BlogServiceClient) string {
 	req := &blogpb.CreateBlogRequest{Blog: &blogpb.Blog{
 		AuthorId: "Vasya",
 		Title:    "How to be a human?",
@@ -44,29 +35,39 @@ func createBlog(cl blogpb.BlogServiceClient) {
 	}}
 	res, err := cl.CreateBlog(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error while creating a blog: %v", err)
+		log.Fatalf("Error while creating a blog: %v\n", err)
 	}
-	log.Printf("Response from CreateBlog: %v", res)
+	log.Printf("Response from CreateBlog: %v\n", res)
+
+	return res.GetBlog().GetId()
 }
 
-func updateBlog(cl blogpb.BlogServiceClient) {
+func readBlog(cl blogpb.BlogServiceClient, blogId string) {
+	res, err := cl.ReadBlog(context.Background(), &blogpb.ReadBlogRequest{BlogId: blogId})
+	if err != nil {
+		log.Fatalf("Error while reading a blog: %v\n", err)
+	}
+	log.Printf("Response from ReadBlog: %v\n", res)
+}
+
+func updateBlog(cl blogpb.BlogServiceClient, blogId string) {
 	req := &blogpb.UpdateBlogRequest{Blog: &blogpb.Blog{
-		Id:       "61b251c9381d0c20a417fffc",
+		Id:       blogId,
 		AuthorId: "Olesha",
 		Title:    "How to be a robot?",
 		Content:  "I know...",
 	}}
 	res, err := cl.UpdateBlog(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error while updating a blog: %v", err)
+		log.Fatalf("Error while updating a blog: %v\n", err)
 	}
-	log.Printf("Response from UpdateBlog: %v", res)
+	log.Printf("Response from UpdateBlog: %v\n", res)
 }
 
-func deleteBlog(cl blogpb.BlogServiceClient) {
-	res, err := cl.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{BlogId: "61b251c9381d0c20a417fffc"})
+func deleteBlog(cl blogpb.BlogServiceClient, blogId string) {
+	res, err := cl.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{BlogId: blogId})
 	if err != nil {
-		log.Fatalf("Error while deleting a blog: %v", err)
+		log.Fatalf("Error while deleting a blog: %v\n", err)
 	}
-	log.Printf("Response from DeleteBlog: %v", res)
+	log.Printf("Response from DeleteBlog: %v\n", res)
 }
