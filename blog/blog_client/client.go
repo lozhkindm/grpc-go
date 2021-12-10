@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lozhkindm/grpc-go/blog/blogpb"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 )
 
@@ -25,6 +26,7 @@ func main() {
 	readBlog(cl, blogId)
 	updateBlog(cl, blogId)
 	deleteBlog(cl, blogId)
+	readAllBlogs(cl)
 }
 
 func createBlog(cl blogpb.BlogServiceClient) string {
@@ -70,4 +72,22 @@ func deleteBlog(cl blogpb.BlogServiceClient, blogId string) {
 		log.Fatalf("Error while deleting a blog: %v\n", err)
 	}
 	log.Printf("Response from DeleteBlog: %v\n", res)
+}
+
+func readAllBlogs(cl blogpb.BlogServiceClient) {
+	stream, err := cl.ListBlog(context.Background(), &blogpb.ListBlogRequest{})
+	if err != nil {
+		log.Fatalf("Error while reading the blogs: %v\n", err)
+	}
+
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Error while reading the stream: %v\n", err)
+		}
+		log.Printf("Response from ListBlog: %v\n", res)
+	}
 }

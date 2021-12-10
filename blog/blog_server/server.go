@@ -115,6 +115,34 @@ func (Server) DeleteBlog(_ context.Context, req *blogpb.DeleteBlogRequest) (*emp
 	return &emptypb.Empty{}, nil
 }
 
+func (Server) ListBlog(_ *blogpb.ListBlogRequest, stream blogpb.BlogService_ListBlogServer) error {
+	cursor, err := collection.Find(context.Background(), primitive.M{})
+	if err != nil {
+		return status.Errorf(codes.Internal, "Cannot find blogs: %v", err)
+	}
+	defer func(cursor *mongo.Cursor, ctx context.Context) {
+		if err := cursor.Close(ctx); err != nil {
+			log.Fatalf("Error while closing a cursor: %v", err)
+		}
+	}(cursor, context.Background())
+
+	for cursor.Next(context.Background()) {
+		item := &BlogItem{}
+		if err := cursor.Decode(item); err != nil {
+			return status.Errorf(codes.Internal, "Cannot decode a blog: %v", err)
+		}
+		res := &blogpb.ListBlogResponse{Blog: makeBlogPb(item)}
+		if err := stream.Send(res); err != nil {
+			return status.Errorf(codes.Internal, "Cannot send a blog: %v", err)
+		}
+	}
+	if err := cursor.Err(); err != nil {
+		return status.Errorf(codes.Internal, "Unexpected error: %v", err)
+	}
+
+	return nil
+}
+
 func makeBlogPb(item *BlogItem) *blogpb.Blog {
 	return &blogpb.Blog{
 		Id:       item.Id.Hex(),

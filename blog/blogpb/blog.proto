@@ -40,7 +40,11 @@ message DeleteBlogRequest {
   string blog_id = 1;
 }
 
-message DeleteBlogResponse {}
+message ListBlogRequest {}
+
+message ListBlogResponse {
+  Blog blog = 1;
+}
 
 service BlogService {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
@@ -56,4 +60,6 @@ service BlogService {
   // Possible errors:
   // NOT_FOUND
   rpc DeleteBlog(DeleteBlogRequest) returns (google.protobuf.Empty) {};
+
+  rpc ListBlog(ListBlogRequest) returns (stream ListBlogResponse) {};
 }
