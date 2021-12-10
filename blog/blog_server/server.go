@@ -67,14 +67,42 @@ func (Server) ReadBlog(_ context.Context, req *blogpb.ReadBlogRequest) (*blogpb.
 		return nil, status.Errorf(codes.NotFound, "Blog not found: %v", err)
 	}
 
-	res := &blogpb.ReadBlogResponse{Blog: &blogpb.Blog{
+	return &blogpb.ReadBlogResponse{Blog: makeBlogPb(item)}, nil
+}
+
+func (Server) UpdateBlog(_ context.Context, req *blogpb.UpdateBlogRequest) (*blogpb.UpdateBlogResponse, error) {
+	blog := req.GetBlog()
+	oid, err := primitive.ObjectIDFromHex(blog.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Cannot cast to ObjectID: %v", err)
+	}
+
+	item := &BlogItem{}
+	filter := primitive.M{"_id": oid}
+	one := collection.FindOne(context.Background(), filter)
+	if err := one.Decode(item); err != nil {
+		return nil, status.Errorf(codes.NotFound, "Blog not found: %v", err)
+	}
+
+	item.AuthorId = blog.GetAuthorId()
+	item.Title = blog.GetTitle()
+	item.Content = blog.GetContent()
+
+	_, err = collection.ReplaceOne(context.Background(), filter, item)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Cannot update the blog: %v", err)
+	}
+
+	return &blogpb.UpdateBlogResponse{Blog: makeBlogPb(item)}, nil
+}
+
+func makeBlogPb(item *BlogItem) *blogpb.Blog {
+	return &blogpb.Blog{
 		Id:       item.Id.Hex(),
 		AuthorId: item.AuthorId,
 		Title:    item.Title,
 		Content:  item.Content,
-	}}
-
-	return res, nil
+	}
 }
 
 func main() {

@@ -23,7 +23,8 @@ func main() {
 
 	cl := blogpb.NewBlogServiceClient(cc)
 	//createBlog(cl)
-	readBlog(cl)
+	//readBlog(cl)
+	updateBlog(cl)
 }
 
 func readBlog(cl blogpb.BlogServiceClient) {
@@ -44,6 +45,19 @@ func createBlog(cl blogpb.BlogServiceClient) {
 	if err != nil {
 		log.Fatalf("Error while creating a blog: %v", err)
 	}
-
 	log.Printf("Response from CreateBlog: %v", res)
+}
+
+func updateBlog(cl blogpb.BlogServiceClient) {
+	req := &blogpb.UpdateBlogRequest{Blog: &blogpb.Blog{
+		Id:       "61b251c9381d0c20a417fffc",
+		AuthorId: "Olesha",
+		Title:    "How to be a robot?",
+		Content:  "I know...",
+	}}
+	res, err := cl.UpdateBlog(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error while updating a blog: %v", err)
+	}
+	log.Printf("Response from UpdateBlog: %v", res)
 }
