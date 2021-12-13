@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
@@ -174,6 +175,7 @@ func main() {
 
 	server := grpc.NewServer()
 	blogpb.RegisterBlogServiceServer(server, &Server{})
+	reflection.Register(server)
 
 	go func() {
 		if err := server.Serve(listener); err != nil {
